@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+require 'base64'
+x = File.readlines(ARGV[0])
+
+x = x[4].split(',',2)[1].split('"',2)[0]
+
+dir = '/tmp/skitch2png'
+`rm -rf #{dir}`
+`mkdir #{dir}`
+
+filename = ARGV[0].split('/').last
+outfile = ARGV[1] || dir+'/'+filename+'.png'
+
+File.open(outfile, 'wb') do |f|
+  f.write(Base64.decode64(x))
+end

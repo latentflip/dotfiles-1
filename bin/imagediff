@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+require 'chunky_png'
+include ChunkyPNG::Color
+
+dir = '/tmp/imagediff'
+`rm -rf #{dir}`
+`mkdir #{dir}`
+
+
+skitch_files = Dir['/Users/Roberts/Pictures/Skitch/*'].reject { |f| File.directory?(f) }.sort_by { |f| File.ctime(f) }.reverse
+
+file0 = ARGV[0] || skitch_files[0]
+file1 = ARGV[1] || skitch_files[1]
+  
+
+`skitch2png #{file0} #{dir}/0.png`
+`skitch2png #{file1} #{dir}/1.png`
+
+
+images = [
+  ChunkyPNG::Image.from_file(dir+'/0.png'),
+  ChunkyPNG::Image.from_file(dir+'/1.png')
+]
+
+images.first.height.times do |y|
+  images.first.row(y).each_with_index do |pixel, x|
+
+    images.last[x,y] = rgb(
+      r(pixel) + r(images.last[x,y]) - 2 * [r(pixel), r(images.last[x,y])].min,
+      g(pixel) + g(images.last[x,y]) - 2 * [g(pixel), g(images.last[x,y])].min,
+      b(pixel) + b(images.last[x,y]) - 2 * [b(pixel), b(images.last[x,y])].min
+    )
+  end
+
+end
+
+images.last.save(dir+'/diff.png')
+`open #{dir}/diff.png`
