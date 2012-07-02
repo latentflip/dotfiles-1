@@ -68,8 +68,9 @@ let mapleader = ","
 inoremap kj <ESC>
 
 nnoremap <C-p> :CommandT<CR>
-inoremap kj <ESC>
 
+"normal mode repeat
+vnoremap . :norm.<CR>
 
 " reflow paragraph with Q in normal and visual mode
 nnoremap Q gqap
