@@ -1,4 +1,4 @@
-alias f-up='RACK_ENV=development foreman start'
+alias f-up='export RACK_ENV=development; bundle exec foreman start'
 
 
 alias h-c='heroku run console'

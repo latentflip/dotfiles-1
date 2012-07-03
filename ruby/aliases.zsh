@@ -12,3 +12,5 @@ alias rake='noglob rake'
 
 alias ss='script/specs'
 alias sa='script/acceptance'
+
+alias rk='rake'
