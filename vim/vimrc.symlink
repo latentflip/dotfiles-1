@@ -54,7 +54,8 @@ filetype plugin indent on
 set wildmode=longest,list
 " make tab completion for files/buffers act like bash
 set wildmenu
-
+"fix diff options
+set diffopt=filler,vertical
 
 
 " ----------------------------------------------------------------------------
@@ -65,10 +66,13 @@ set wildmenu
 let mapleader = ","
 
 " exit to normal mode with 'kj'
-inoremap kj <ESC>
+" inoremap kj <ESC>
 
 nnoremap <C-p> :CommandT<CR>
 set pastetoggle=<F3>
+
+"normal mode repeat
+vnoremap . :norm.<CR>
 
 " reflow paragraph with Q in normal and visual mode
 nnoremap Q gqap
@@ -347,6 +351,14 @@ function! OpenChangedFiles()
   endfor
 endfunction
 command! OpenChangedFiles :call OpenChangedFiles()
+
+function! GitDiff()
+  exec "diffthis"
+  exec "vsp HEAD:%"
+  exec "diffthis"
+endfunction
+command! GitDiff :call GitDiff()
+map <leader>gd :call GitDiff()<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Open recently edited files

@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+if File.exists?("package.json")
+  puts "Already got a package.json in this directory."
+  puts "Continue? y/n"
+
+  confirm = gets.chomp[0]
+
+  unless confirm == "y"
+    exit
+  end
+end
+
+
+`curl https://raw.github.com/gist/3097279/package.json > package.tmp`
+
+package = File.open("package.tmp")
+lines = package.lines
+
+data = {
+  "author_name" => `git config user.name`.chomp,
+  "author_email" => `git config user.email`.chomp
+}
+
+File.open("package.json", "w+") do |f|
+  lines.each do |line|
+    reg = /{{([^}]*?)}}/
+    match = line.match reg
+
+    line.gsub!(reg) do |match|
+      unless val = data[$1]
+        puts "#{$1}: "
+        val = gets.chomp
+      end
+      
+      val
+    end
+
+    f.write line
+  end
+end
+
+`rm package.tmp`
