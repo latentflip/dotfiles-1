@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+path = `pbpaste`
+path = path.split('assets').last
+path = path.split('?')[0..-2].join
+
+if path =~ /^\/backbone/
+  puts "app#{path}.coffee"
+end

@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+lines = File.open('./app/assets/javascripts/application.js', 'r') do |f|
+  lines = f.readlines
+
+  if lines.last =~ /assets cache comment/
+    lines.pop
+  else
+    lines.push("//assets cache comment\n")
+  end
+  lines
+end
+
+File.open('./app/assets/javascripts/application.js', 'w+') do |f|
+  lines.each do |l|
+    f.write l
+  end
+end
+
+lines = File.open('./app/assets/stylesheets/application.css', 'r') do |f|
+  lines = f.readlines
+
+  if lines.last =~ /assets cache comment/
+    lines.pop
+  else
+    lines.push("/*assets cache comment*/\n")
+  end
+  lines
+end
+
+File.open('./app/assets/stylesheets/application.css', 'w+') do |f|
+  lines.each do |l|
+    f.write l
+  end
+end

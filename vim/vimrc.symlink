@@ -210,7 +210,12 @@ inoremap <s-tab> <c-n>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
 map <leader>e :edit %%
-map <leader>v :view %%
+"map <leader>v :view %%
+map <leader>s :sp<cr>:edit %%
+map <leader>v :vsp<cr>:edit %%
+
+"Open file returned by ~/.dotfiles/bin/editjs
+noremap <leader>j :e `editjs`<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " RENAME CURRENT FILE
@@ -376,3 +381,16 @@ function! LastEditedProject()
 endfunction
 map <leader>le :call LastEdited()<cr><cr>
 map <leader>lep :call LastEditedProject()<cr><cr>
+
+
+map <leader>c bhxlli,<ESC>llli,<ESC>llciw<C-R>=0x<C-r>"<CR><ESC>bbb ciw<C-R>=0x<C-r>"<CR><ESC>bbb ciw<C-R>=0x<C-r>"<CR><ESC>
+map <leader>< Yp<<
+
+
+map <leader>// A  <esc>100i/<ESC>80\|"_D<esc>
+function! InsertHLine()
+  let n = 80-virtcol('.')
+  let myline = repeat('/', n)
+  return myline
+endfunction
+inoremap <C-/> :call InsertHLine() <cr>
