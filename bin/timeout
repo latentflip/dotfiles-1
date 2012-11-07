@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'yaml'
+require 'time'
 
 command = ARGV[0]
 args = ARGV[1..-1]
@@ -8,7 +9,11 @@ args = ARGV[1..-1]
 module Timeout
   def hide_apps
     `mkdir -p ~/.timeout/Applications`
-    APPS.each do |app|
+    
+    apps = YAML.load(DATA)[:apps] || []
+
+    apps.each do |app|
+      puts "blocking #{app}"
       `sudo mv /Applications/#{app}.app ~/.timeout/Applications`
     end
   end
@@ -37,27 +42,89 @@ module Timeout
 
   def block_apps(apps)
     apps.each do |app|
-      `echo #{app} >> #{__FILE__}`
+      `echo "- #{app}" >> #{__FILE__}`
     end
   end
+
+  def stats_file
+    File.join(File.dirname(__FILE__), '../stats/timeout.tsv')
+  end
+
+  def status_string
+    l = File.read(stats_file).split("\n")
+    last = l.last.split("\t")
+    
+    last_time = Time.parse(last[0])
+    now = Time.now
+
+    seconds = (now - last_time)
+
+    days = (seconds/(24*60*60)).floor
+    seconds = seconds - (days * 24*60*60)
+
+    hours = (seconds/(60*60)).floor
+    seconds = seconds - (hours * 60*60)
+
+    minutes = (seconds/(60)).floor
+    seconds = seconds - (minutes *60)
+
+    seconds = seconds.floor
+
+    diff_time = "#{days}d "+[hours,minutes,seconds].map { |n| "%02d" % n}.join(':')
+
+    "#{last[1]} for #{diff_time}"
+  end
+
+  def log(on_off)
+    `touch #{stats_file}`
+
+    if on_off == :on
+      content = "#{Time.now}\tworking"
+    else
+      content = "#{Time.now}\tplaying"
+    end
+
+    `echo "#{content}" >> #{stats_file}`
+  end
+  def create_lock_file
+    `touch ~/.timeout_on`
+  end
+  def check_lock_file?
+    File.exists?(File.expand_path('~/.timeout_on'))
+  end
+  def remove_lock_file
+    `rm ~/.timeout_on`
+  end
 end
-
-
 
 
 include Timeout
 
 case command
 when 'start'
+  if check_lock_file?
+    puts "Already started"
+    exit
+  end
   puts 'Blocking'
   hide_apps
   block_bad_hosts
   flush_cache
-when 'end'
+  log(:on)
+  create_lock_file
+when 'status'
+  puts status_string
+when 'stop', 'end'
+  unless check_lock_file?
+    puts "Already stopped"
+    exit
+  end
   puts 'Unblocking'
   unhide_apps
   unblock_bad_hosts
   flush_cache
+  log(:off)
+  remove_lock_file
 when 'block'
   puts "Blocking domains #{args}"
   block_domains(args)
