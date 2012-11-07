@@ -21,4 +21,4 @@ compinit
 # load every completion after autocomplete loads
 for config_file ($ZSH/**/completion.sh) source $config_file
 
-source ~/nvm/nvm.sh
+export PATH=./bin:/Applications/phantomjs/bin/phantomjs:/usr/local/share/npm/bin:$PATH

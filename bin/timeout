@@ -1,0 +1,74 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+
+command = ARGV[0]
+args = ARGV[1..-1]
+
+module Timeout
+  def hide_apps
+    `mkdir -p ~/.timeout/Applications`
+    APPS.each do |app|
+      `sudo mv /Applications/#{app}.app ~/.timeout/Applications`
+    end
+  end
+
+  def unhide_apps
+    `sudo mv ~/.timeout/Applications/* /Applications`
+  end
+
+  def block_bad_hosts
+    `sudo cp /etc/hosts.bad /etc/hosts`
+  end
+  def unblock_bad_hosts
+    `sudo cp /etc/hosts.ok /etc/hosts`
+  end
+  def flush_cache
+    `dscacheutil -flushcache`
+  end
+  
+  def block_domains(domains)
+    domains.each do |domain|
+      domain = domain.gsub /^www./, ''
+      `sudo echo "127.0.0.1 #{domain}" >> /etc/hosts.bad`
+      `sudo echo "127.0.0.1 www.#{domain}" >> /etc/hosts.bad`
+    end
+  end
+
+  def block_apps(apps)
+    apps.each do |app|
+      `echo #{app} >> #{__FILE__}`
+    end
+  end
+end
+
+
+
+
+include Timeout
+
+case command
+when 'start'
+  puts 'Blocking'
+  hide_apps
+  block_bad_hosts
+  flush_cache
+when 'end'
+  puts 'Unblocking'
+  unhide_apps
+  unblock_bad_hosts
+  flush_cache
+when 'block'
+  puts "Blocking domains #{args}"
+  block_domains(args)
+  block_bad_hosts
+when 'app'
+  puts "Blocking app #{args}"
+  block_apps(args)
+end
+
+__END__
+
+---
+:apps:
+- Twitter

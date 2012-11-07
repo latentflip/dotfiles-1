@@ -29,6 +29,7 @@ class Object
     end
     puts `ri '#{method}'`
   end
+
 end
 
 def me
@@ -37,4 +38,8 @@ end
 
 def r
   reload!
+end
+
+def Object.imethods(q=/.*/)
+  self.instance_methods(false).sort.grep(q)
 end

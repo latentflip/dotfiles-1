@@ -70,6 +70,7 @@ let mapleader = ","
 
 nnoremap <C-p> :CommandT<CR>
 set pastetoggle=<F3>
+inoremap §§ <ESC>:set paste<CR>a<C-R>*<ESC>:set nopaste<CR>`[v`]=`]o
 
 "normal mode repeat
 vnoremap . :norm.<CR>
@@ -394,3 +395,15 @@ function! InsertHLine()
   return myline
 endfunction
 inoremap <C-/> :call InsertHLine() <cr>
+
+
+"""""
+" ZenCoding
+"""""
+
+let g:user_zen_leader_key = '<c-e>'
+let g:user_zen_expandabbr_key = '<c-e><c-e>'
+
+"lets you add classes/ids to tags:   <tr.foo_>asdfasdF</tr> typing <c-e><c-c>
+"there will result in <tr class="foo">asdfasdF</tr>
+inoremap <c-e><c-c> <c-g>u<esc>:call zencoding#expandAbbr(0,"")<cr>a<esc>dt>x
