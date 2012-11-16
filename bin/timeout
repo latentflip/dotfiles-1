@@ -128,7 +128,9 @@ when 'stop', 'end'
 when 'block'
   puts "Blocking domains #{args}"
   block_domains(args)
-  block_bad_hosts
+  if check_lock_file?
+    block_bad_hosts
+  end
 when 'app'
   puts "Blocking app #{args}"
   block_apps(args)
