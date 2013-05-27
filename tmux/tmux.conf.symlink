@@ -1,1 +1,34 @@
-/Users/Roberts/Dev/dotfiles/dotfiles/tmux.conf
+unbind C-b
+set -g prefix C-a
+
+set -g default-terminal "screen-256color"
+
+bind-key C-a last-window
+
+
+unbind-key left     
+bind-key left     select-pane -L
+unbind-key up       
+bind-key up       select-pane -U
+unbind-key down     
+bind-key down     select-pane -D
+unbind-key right    
+bind-key right    select-pane -R
+
+unbind-key C-h      
+bind-key C-h      select-pane -L
+unbind-key C-k      
+bind-key C-k      select-pane -U
+unbind-key C-j      
+bind-key C-j      select-pane -D
+unbind-key C-l      
+bind-key C-l      select-pane -R
+
+unbind-key j        
+bind-key -r j     resize-pane -D 5
+unbind-key k        
+bind-key -r k     resize-pane -U 5
+unbind-key h        
+bind-key -r h     resize-pane -L 5
+unbind-key l        
+bind-key -r l     resize-pane -R 5
