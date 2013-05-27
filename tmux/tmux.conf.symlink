@@ -5,6 +5,12 @@ set -g default-terminal "screen-256color"
 
 bind-key C-a last-window
 
+# Reload
+bind r source-file ~/.tmux.conf \; display-message "Config reloaded..."
+
+# Resizes window to current client, not smallest one
+setw -g aggressive-resize on
+
 
 unbind-key left     
 bind-key left     select-pane -L
@@ -32,3 +38,6 @@ unbind-key h
 bind-key -r h     resize-pane -L 5
 unbind-key l        
 bind-key -r l     resize-pane -R 5
+
+bind-key -        split-window -v
+bind-key |        split-window -h
