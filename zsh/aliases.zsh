@@ -11,7 +11,6 @@ alias tunnel='ssh -R 56985:localhost:5000 latentflip@latentflip.com'
 
 alias fack='find . -name '
 
-alias git='hub'
 alias unused='nocorrect unused'
 
 alias sj='noglob sj'

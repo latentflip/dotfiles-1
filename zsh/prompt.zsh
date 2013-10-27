@@ -12,7 +12,7 @@ git_dirty() {
   then
     echo ""
   else
-    if [[ $st == "nothing to commit (working directory clean)" ]]
+    if [[ $st == "nothing to commit, working directory clean" ]]
     then
       echo "on %{$fg_bold[green]%}$(git_prompt_info)%{$reset_color%}"
     else
@@ -41,9 +41,9 @@ need_push () {
 }
 
 rvm_prompt(){
-  if $(which rvm &> /dev/null)
+  if $(which rbenv &> /dev/null)
   then
-	  echo "%{$fg_bold[yellow]%}$(rvm tools identifier)%{$reset_color%}"
+	  echo "%{$fg_bold[yellow]%}$(rbenv version-name)%{$reset_color%}"
 	else
 	  echo ""
   fi

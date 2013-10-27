@@ -165,7 +165,7 @@ augroup END
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 :set t_Co=256 " 256 colors
 :set background=dark
-:color monokai
+:color solarized
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " STATUS LINE
@@ -396,6 +396,7 @@ function! InsertHLine()
 endfunction
 inoremap <C-/> :call InsertHLine() <cr>
 
+map <leader>b :!projectbuild<cr>
 
 """""
 " ZenCoding
