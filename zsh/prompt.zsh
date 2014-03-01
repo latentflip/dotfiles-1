@@ -1,65 +1,118 @@
-autoload colors && colors
-# cheers, @ehrenmurdick
-# http://github.com/ehrenmurdick/config/blob/master/zsh/prompt.zsh
+# Pure
+# by Sindre Sorhus
+# https://github.com/sindresorhus/pure
+# MIT License
 
-git_branch() {
-  echo $(/usr/bin/git symbolic-ref HEAD 2>/dev/null | awk -F/ {'print $NF'})
+# For my own and others sanity
+# git:
+# %b => current branch
+# %a => current action (rebase/merge)
+# prompt:
+# %F => color dict
+# %f => reset color
+# %~ => current path
+# %* => time
+# %n => username
+# %m => shortname host
+# %(?..) => prompt conditional - %(condition.true.false)
+
+
+# turns seconds into human readable time
+# 165392 => 1d 21h 56m 32s
+prompt_pure_human_time() {
+	local tmp=$1
+	local days=$(( tmp / 60 / 60 / 24 ))
+	local hours=$(( tmp / 60 / 60 % 24 ))
+	local minutes=$(( tmp / 60 % 60 ))
+	local seconds=$(( tmp % 60 ))
+	(( $days > 0 )) && echo -n "${days}d "
+	(( $hours > 0 )) && echo -n "${hours}h "
+	(( $minutes > 0 )) && echo -n "${minutes}m "
+	echo "${seconds}s"
 }
 
-git_dirty() {
-  st=$(/usr/bin/git status 2>/dev/null | tail -n 1)
-  if [[ $st == "" ]]
-  then
-    echo ""
-  else
-    if [[ $st == "nothing to commit, working directory clean" ]]
-    then
-      echo "on %{$fg_bold[green]%}$(git_prompt_info)%{$reset_color%}"
-    else
-      echo "on %{$fg_bold[red]%}$(git_prompt_info)%{$reset_color%}"
-    fi
-  fi
+# fastest possible way to check if repo is dirty
+prompt_pure_git_dirty() {
+	# check if we're in a git repo
+	command git rev-parse --is-inside-work-tree &>/dev/null || return
+	# check if it's dirty
+	command git diff --quiet --ignore-submodules HEAD &>/dev/null
+
+	(($? == 1)) && echo '*'
 }
 
-git_prompt_info () {
- ref=$(/usr/bin/git symbolic-ref HEAD 2>/dev/null) || return
-# echo "(%{\e[0;33m%}${ref#refs/heads/}%{\e[0m%})"
- echo "${ref#refs/heads/}"
+# displays the exec time of the last command if set threshold was exceeded
+prompt_pure_cmd_exec_time() {
+	local stop=$(date +%s)
+	local start=${cmd_timestamp:-$stop}
+	integer elapsed=$stop-$start
+	(($elapsed > ${PURE_CMD_MAX_EXEC_TIME:=5})) && prompt_pure_human_time $elapsed
 }
 
-unpushed () {
-  /usr/bin/git cherry -v @{upstream} 2>/dev/null
+prompt_pure_preexec() {
+	cmd_timestamp=$(date +%s)
+
+	# shows the current dir and executed command in the title when a process is active
+	print -Pn "\e]0;"
+	echo -nE "$PWD:t: $2"
+	print -Pn "\a"
 }
 
-need_push () {
-  if [[ $(unpushed) == "" ]]
-  then
-    echo " "
-  else
-    echo " with %{$fg_bold[magenta]%}unpushed%{$reset_color%} "
-  fi
+# string length ignoring ansi escapes
+prompt_pure_string_length() {
+	echo ${#${(S%%)1//(\%([KF1]|)\{*\}|\%[Bbkf])}}
 }
 
-rvm_prompt(){
-  if $(which rbenv &> /dev/null)
-  then
-	  echo "%{$fg_bold[yellow]%}$(rbenv version-name)%{$reset_color%}"
-	else
-	  echo ""
-  fi
+prompt_pure_precmd() {
+	# shows the full path in the title
+	print -Pn '\e]0;%~\a'
+
+	# git info
+	vcs_info
+
+	local prompt_pure_preprompt='\n%F{blue}%~%F{242}$vcs_info_msg_0_`prompt_pure_git_dirty` $prompt_pure_username%f %F{yellow}`prompt_pure_cmd_exec_time`%f'
+	print -P $prompt_pure_preprompt
+
+	# check async if there is anything to pull
+	(( ${PURE_GIT_PULL:-1} )) && {
+		# check if we're in a git repo
+		command git rev-parse --is-inside-work-tree &>/dev/null &&
+		# check check if there is anything to pull
+		command git fetch &>/dev/null &&
+		# check if there is an upstream configured for this branch
+		command git rev-parse --abbrev-ref @'{u}' &>/dev/null &&
+		(( $(command git rev-list --right-only --count HEAD...@'{u}' 2>/dev/null) > 0 )) &&
+		# some crazy ansi magic to inject the symbol into the previous line
+		print -Pn "\e7\e[A\e[1G\e[`prompt_pure_string_length $prompt_pure_preprompt`C%F{cyan}⇣%f\e8"
+	} &!
+
+	# reset value since `preexec` isn't always triggered
+	unset cmd_timestamp
 }
 
 
-directory_name(){
-  echo "%{$fg_bold[cyan]%}%1/%\/%{$reset_color%}"
+prompt_pure_setup() {
+	# prevent percentage showing up
+	# if output doesn't end with a newline
+	export PROMPT_EOL_MARK=''
+
+	prompt_opts=(cr subst percent)
+
+	autoload -Uz add-zsh-hook
+	autoload -Uz vcs_info
+
+	add-zsh-hook precmd prompt_pure_precmd
+	add-zsh-hook preexec prompt_pure_preexec
+
+	zstyle ':vcs_info:*' enable git
+	zstyle ':vcs_info:git*' formats ' %b'
+	zstyle ':vcs_info:git*' actionformats ' %b|%a'
+
+	# show username@host if logged in through SSH
+	[[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username='%n@%m '
+
+	# prompt turns red if the previous command didn't exit with 0
+	PROMPT='%(?.%F{magenta}.%F{red})❯%f '
 }
 
-export PROMPT=$'\n$(rvm_prompt) in $(directory_name) $(git_dirty)$(need_push)\n› '
-set_prompt () {
-  export RPROMPT="%{$fg_bold[cyan]%}%{$reset_color%}"
-}
-
-precmd() {
-  title "zsh" "%m" "%55<...<%~"
-  set_prompt
-}
+prompt_pure_setup "$@"

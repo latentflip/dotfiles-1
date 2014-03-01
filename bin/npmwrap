@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+if [[ "$1" = "install" || "$1" = "i" ]]; then
+    npm $@
+    cat package.json | md5 > .npm-build
+else
+    if [[ -a package.json ]]; then
+        md5=$(cat package.json | md5)
+
+        if [[ ( ! -a .npm-build ) || ("$md5" != "$(cat .npm-build)") ]]; then
+            echo -e "\e[0;31mWarning:\e[0m node_modules is out of date"
+        fi
+        sleep 2
+    fi
+    npm $@
+fi
+

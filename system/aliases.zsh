@@ -13,3 +13,10 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
+
+alias resound='sudo kextunload /System/Library/Extensions/AppleHDA.kext; sudo kextload /System/Library/Extensions/AppleHDA.kext'
+alias revideo='sudo killall VDCAssistant'
+
+function portprocess(){
+    sudo lsof -i :$1;
+}

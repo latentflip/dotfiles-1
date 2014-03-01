@@ -12,9 +12,9 @@ set hidden
 " remember more commands and search history
 set history=10000
 set expandtab
-set tabstop=2
-set shiftwidth=2
-set softtabstop=2
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
 set autoindent
 set laststatus=2
 set showmatch
@@ -145,8 +145,8 @@ augroup vimrcEx
     \ endif
 
   "for ruby, autoindent with two spaces, always expand tabs
-  autocmd FileType ruby,haml,eruby,yaml,html,javascript,sass,cucumber set ai sw=2 sts=2 et
-  autocmd FileType python set sw=4 sts=4 et
+  autocmd FileType ruby,haml,eruby,yaml,html,sass,cucumber,stylus,jade set ai sw=2 sts=2 ts=2 et
+  autocmd FileType python,javascript set ts=4 sw=4 sts=4 et
 
   autocmd! BufRead,BufNewFile *.sass setfiletype sass 
 
@@ -164,7 +164,7 @@ augroup END
 " COLOR
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 :set t_Co=256 " 256 colors
-:set background=dark
+:set background=light
 :color solarized
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -211,7 +211,6 @@ inoremap <s-tab> <c-n>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
 map <leader>e :edit %%
-"map <leader>v :view %%
 map <leader>s :sp<cr>:edit %%
 map <leader>v :vsp<cr>:edit %%
 
@@ -337,7 +336,8 @@ function! RunNearestTest()
     call RunTestFile(":" . spec_line_number . " -b")
 endfunction
 
-map <leader>t :call RunTestFile()<cr>
+"map <leader>t :call RunTestFile()<cr>
+map <leader>t :!npm test<cr>
 map <leader>T :call RunNearestTest()<cr>
 map <leader>a :call RunTests('')<cr>
 map <leader>c :w\|:!script/features<cr>
@@ -408,3 +408,30 @@ let g:user_zen_expandabbr_key = '<c-e><c-e>'
 "lets you add classes/ids to tags:   <tr.foo_>asdfasdF</tr> typing <c-e><c-c>
 "there will result in <tr class="foo">asdfasdF</tr>
 inoremap <c-e><c-c> <c-g>u<esc>:call zencoding#expandAbbr(0,"")<cr>a<esc>dt>x
+
+highlight ExtraWhitespace cterm=underline ctermfg=darkred
+match ExtraWhitespace /\s\+$/
+
+if has('mac') && ($TERM == 'xterm-256color' || $TERM == 'screen-256color')
+  map <Esc>OP <F1>
+  map <Esc>OQ <F2>
+  map <Esc>OR <F3>
+  map <Esc>OS <F4>
+  map <Esc>[16~ <F5>
+  map <Esc>[17~ <F6>
+  map <Esc>[18~ <F7>
+  map <Esc>[19~ <F8>
+  map <Esc>[20~ <F9>
+  map <Esc>[21~ <F10>
+  map <Esc>[23~ <F11>
+  map <Esc>[24~ <F12>
+endif
+
+call togglebg#map("<F5>")
+set pastetoggle=<F2>
+
+
+
+""""""
+" Abbreviations
+iab rq require(');<Left><Left><Left>

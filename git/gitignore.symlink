@@ -4,3 +4,5 @@
 *~
 *.swp
 *.rbc
+.npm-build
+node_modules
