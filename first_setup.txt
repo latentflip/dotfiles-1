@@ -1,8 +1,13 @@
 brew install coreutils
 brew install grc
-brew install todo-txt
 
 brew install ffmpeg
 brew install imagesnap
 brew install imagemagick
 brew install wget
+brew install ack
+brew install reattach-to-usernamespace
+
+#install nvm
+#install
+#create ssh key
