@@ -1,0 +1,14 @@
+echo $1 | cut -d '/' -f1 | read user
+echo $1 | cut -d '/' -f2 | read repo
+
+mkdir -p ~/Code/github/$user
+
+if [ -d ~/Code/github/$user/$repo ]; then
+    echo "Project $user/$repo is already cloned, will just cd into it"
+    cd ~/Code/github/$user/$repo
+else
+    echo "Cloning $user/$repo"
+    cd ~/Code/github/$user
+    git clone git@github.com:$user/$repo
+    cd $repo
+fi
