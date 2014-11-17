@@ -1,3 +1,19 @@
 [submodule "vim/vim.symlink/bundle/mru.vim"]
 	path = vim/vim.symlink/bundle/mru.vim
 	url = https://github.com/vim-scripts/mru.vim
+
+[submodule "vim/vim.symlink/bundle/syntastic"]
+	path = vim/vim.symlink/bundle/syntastic
+    url = https://github.com/scrooloose/syntastic
+
+[submodule "vim/vim.symlink/bundle/vim-jade"]
+	path = vim/vim.symlink/bundle/vim-jade
+    url = https://github.com/digitaltoad/vim-jade
+
+[submodule "vim/vim.symlink/bundle/vim-javascript"]
+	path = vim/vim.symlink/bundle/vim-javascript
+    url = https://github.com/pangloss/vim-javascript
+
+[submodule "vim/vim.symlink/bundle/vim-stylus"]
+	path = vim/vim.symlink/bundle/vim-stylus
+    url = https://github.com/wavded/vim-stylus
