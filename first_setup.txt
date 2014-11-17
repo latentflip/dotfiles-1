@@ -17,3 +17,5 @@ brew install phantomjs
 
 npm install track-your-damn-time -g
 npm install fuck-you -g
+
+git submodule update --init
