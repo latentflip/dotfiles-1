@@ -1,6 +1,5 @@
 set noswapfile
 
-"3call pathogen#runtime_append_all_bundles()call pathogen#infect(A
 call pathogen#infect()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

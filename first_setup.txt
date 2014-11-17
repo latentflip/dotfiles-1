@@ -1,3 +1,6 @@
+#install nvm
+#create ssh key
+
 brew install coreutils
 brew install grc
 
@@ -8,12 +11,9 @@ brew install wget
 brew install ack
 brew install tmux
 brew install reattach-to-user-namespace
+brew install tree
 
 brew install phantomjs
-
-#install nvm
-#install
-#create ssh key
 
 npm install track-your-damn-time -g
 npm install fuck-you -g
