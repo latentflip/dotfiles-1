@@ -1,0 +1,3 @@
+#compdef repo
+
+compadd `cd ~/Code/github && find . -type d -maxdepth 2 -mindepth 1 | sed 's/^..//'`

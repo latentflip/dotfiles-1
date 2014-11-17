@@ -11,6 +11,11 @@ export PROJECTS=~/Projects
 # source every .zsh file in this rep
 for config_file ($ZSH/**/*.zsh) source $config_file
 
+# initialize autocomplete here, otherwise functions won't be loaded
+autoload -U compinit
+compinit
+
+
 # use .localrc for SUPER SECRET CRAP that you don't
 # want in your public, versioned repo.
 if [[ -a ~/.localrc ]]
@@ -23,6 +28,7 @@ fi
 zstyle ':completion:*:*:git:*' script /usr/local/etc/bash_completion.d/git-completion.bash
 #for config_file ($ZSH/**/completion.sh) source $config_file
 
+
 export TERM="xterm-256color"
 
 export PATH=./bin:/Applications/phantomjs/bin/phantomjs:/usr/local/share/npm/bin:$PATH
@@ -34,3 +40,5 @@ export PATH=./bin:/Applications/phantomjs/bin/phantomjs:/usr/local/share/npm/bin
 #alias java="/Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
 
 [ -s $HOME/.nvm/nvm.sh ] && . $HOME/.nvm/nvm.sh # This loads NVM
+
+track-your-damn-time

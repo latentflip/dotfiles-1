@@ -14,3 +14,6 @@ brew install phantomjs
 #install nvm
 #install
 #create ssh key
+
+npm install track-your-damn-time -g
+npm install fuck-you -g
